@@ -80,7 +80,6 @@ if __name__ == '__main__':
     coordNum = 0
     #store marked map after only non-diagonal coordinates
     for coordPair in straightCoords:
-        print(f'Coordinate {coordNum} of {len(allCoords)} (straight)')
         vents_map_1 = markHorizAndVerts(vents_map_1, coordPair)
         coordNum += 1
 
@@ -88,7 +87,6 @@ if __name__ == '__main__':
     #continue drawing on map with diagonal coordinates on top of straight coordinates
 
     for coordPair in diagCoords:
-        print(f'Coordinate {coordNum} of {len(allCoords)} (diagonal)')
         vents_map_2 = markDiagonals(vents_map_2, coordPair)
         coordNum += 1
 

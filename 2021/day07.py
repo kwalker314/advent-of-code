@@ -2,7 +2,6 @@ import numpy as np
 if __name__ == '__main__':
     input = "inputs/input07.txt"
     crabs = np.genfromtxt(input, delimiter=',', dtype='int64')
-    print(crabs)
 
     i = np.min(crabs) #start from the lowest number we can
     # ... but don't start with 0 for the first iteration or part 2's answer will get zeroed out

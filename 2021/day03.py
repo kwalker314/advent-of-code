@@ -12,12 +12,10 @@ def calulateGammaAndEpsilon(bitarr):
     # gamma: convert mode from binary to int
     g_binary = ''.join(map(str, mode.astype(int)))
     g = int(g_binary, 2)
-    print("gamma:   ", g_binary, " / ", g)
 
     # epsilon: convert inverse of mode from binary to int
     e_binary = ''.join(map(str, np.logical_not(mode).astype(int)))
     e = int(e_binary, 2)
-    print("epsilon: ", e_binary, " / ", e)
 
     # multiply to get our answer! (... for part 1 TT_TT)
     print("part 1: ", g * e)
@@ -82,12 +80,10 @@ def calculateO2andCO2(bitarr):
     # o2: convert from binary array to normal int
     o2_binary = ''.join(map(str, o2__arr[0].astype(int)))
     o2 = int(o2_binary, 2)
-    print("o2:  ", o2_binary, " / ", o2)
 
     # co2: convert from binary array to normal int
     co2_binary = ''.join(map(str, co2_arr[0].astype(int)))
     co2 = int(co2_binary, 2)
-    print("co2:  ", co2_binary, " / ", co2)
 
     print("part 2: ", o2*co2)
 

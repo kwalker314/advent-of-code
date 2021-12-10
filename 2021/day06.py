@@ -19,7 +19,6 @@ def processNumbers(fishNumbers):
 if __name__ == '__main__':
     input = "inputs/input06.txt"
     fish = np.genfromtxt(input, delimiter=',', dtype=int)
-    print(fish)
 
     # for each i in fishNumbers[i], the value at the index is
     # how many fish have i more days until they spawn more fish

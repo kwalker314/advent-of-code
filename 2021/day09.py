@@ -46,7 +46,6 @@ if __name__ == '__main__':
     input = "inputs/input09.txt"
     heatmap = np.genfromtxt(input, delimiter=1, dtype=int)
     basins = heatmap.copy()
-    print(heatmap)
     sum = 0
     i = 0
     basin_size_1 = 1
@@ -67,7 +66,5 @@ if __name__ == '__main__':
                 elif basin_size > basin_size_3:
                     basin_size_3 = basin_size
 
-
-        print(f'line {i} of {len(heatmap)} done')
     print(f'sum: {sum}') #496
     print(f'basin_size: {basin_size_1*basin_size_2*basin_size_3}') #902880
