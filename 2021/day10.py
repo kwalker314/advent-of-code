@@ -43,7 +43,6 @@ def scoreChar(char) -> int:
 
 if __name__ == '__main__':
     input = "inputs/input10.txt"
-    i = 0
     score_1 = 0
     scores = []
     for chunk in open(input).readlines():
@@ -66,6 +65,4 @@ if __name__ == '__main__':
             scores.append(chunk_score)
     scores.sort()
     print(f'part 1: {score_1}') #299793
-    print(f'part 2: {scores[(len(scores)-1)//2]}')
-    #2831395449 - too low
-    #2929037097 - wrong
+    print(f'part 2: {scores[(len(scores)-1)//2]}') #3654963618
