@@ -1,27 +1,60 @@
 import numpy as np
 
+STEPS = 100
+
+def stepPropogate(octopi: np.ndarray, i, j, flashes: np.ndarray) -> (np.ndarray, np.ndarray):
+    octo_copy = octopi.copy()
+    flashes_copy = flashes.copy()
+    if not flashes[i][j]:
+        octo_copy[i][j] += 1
+        if octo_copy[i][j] > 9:
+            flashes_copy[i][j] = True
+            octo_copy, flashes_copy = propogate(octo_copy, i, j, flashes_copy)
+    return octo_copy, flashes_copy
+
+def propogate(octopi, i, j, flashes) -> (np.ndarray, np.ndarray):
+    octo_copy = octopi.copy()
+    flashes_copy = flashes.copy()
+    if i > 0 and j > 0:
+        octo_copy, flashes_copy = stepPropogate(octo_copy, i-1, j-1, flashes_copy) #up-left
+    if i > 0:
+        octo_copy, flashes_copy = stepPropogate(octo_copy, i-1, j, flashes_copy)   #up
+    if i > 0 and j < len(octo_copy[0])-1:
+        octo_copy, flashes_copy = stepPropogate(octo_copy, i-1, j+1, flashes_copy) #up-right
+    if j > 0:
+        octo_copy, flashes_copy = stepPropogate(octo_copy, i, j-1, flashes_copy)   #left
+    if j < len(octo_copy[0])-1:
+        octo_copy, flashes_copy = stepPropogate(octo_copy, i, j+1, flashes_copy)   #right
+    if i < len(octo_copy)-1 and j > 0:
+        octo_copy, flashes_copy = stepPropogate(octo_copy, i+1, j-1, flashes_copy) #down-left
+    if i < len(octo_copy)-1:
+        octo_copy, flashes_copy = stepPropogate(octo_copy, i+1, j, flashes_copy)   #down
+    if i < len(octo_copy)-1 and j < len(octo_copy[0])-1:
+        octo_copy, flashes_copy = stepPropogate(octo_copy, i+1, j+1, flashes_copy) #down-right
+    return octo_copy, flashes_copy
+
 if __name__ == '__main__':
     input = "inputs/input11.txt"
-    score_1 = 0
-    scores = []
-    for chunk in open(input).readlines():
-        stack = []
-        finish_stack = True
-        for char in chunk:
-            if isOpeningChar(char):
-                stack.append(char)
-            elif isClosingChar(char) and charsMatch(char, stack[-1]):
-                stack.pop()
-            elif isClosingChar(char):
-                score_1 += scoreChar(char)
-                finish_stack = False
-                break
+    flash_sum = 0
+    octopi = np.genfromtxt(input, dtype=int, delimiter=1)
+    flashes = np.full(octopi.shape, fill_value=False, dtype=bool)
+    all_flash_step = ''
+    step_num = 0
+    while all_flash_step == '':
+        octopi = octopi+1
+        flashes[True] = False
+        for i in range(len(octopi)):
+            for j in range(len(octopi[i])):
+                if octopi[i][j] > 9 and not flashes[i][j]:
+                    flashes[i][j] = True
+                    octopi, flashes = propogate(octopi, i, j, flashes)
+        octopi[octopi > 9] = 0
+        flashes_to_add = len(flashes[flashes == True])
+        step_num += 1
+        if step_num <= STEPS:
+            flash_sum += flashes_to_add
+        if flashes_to_add == len(flashes.flatten()):
+            all_flash_step = step_num
+    print(f'flash_sum: {flash_sum}') #1562
+    print(f'all_flash_step: {all_flash_step}') #268
 
-        if finish_stack:
-            chunk_score = 0
-            for stack_char in reversed(stack):
-                chunk_score = (5 * chunk_score) + scoreChar(stack_char)
-            scores.append(chunk_score)
-    scores.sort()
-    print(f'part 1: {score_1}') #299793
-    print(f'part 2: {scores[(len(scores)-1)//2]}')
