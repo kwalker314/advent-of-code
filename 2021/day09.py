@@ -66,5 +66,5 @@ if __name__ == '__main__':
                 elif basin_size > basin_size_3:
                     basin_size_3 = basin_size
 
-    print(f'sum: {sum}') #496
-    print(f'basin_size: {basin_size_1*basin_size_2*basin_size_3}') #902880
+    print(f'part 1: {sum}') #496
+    print(f'part 2: {basin_size_1*basin_size_2*basin_size_3}') #902880

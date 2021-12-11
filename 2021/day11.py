@@ -55,6 +55,6 @@ if __name__ == '__main__':
             flash_sum += flashes_to_add
         if flashes_to_add == len(flashes.flatten()):
             all_flash_step = step_num
-    print(f'flash_sum: {flash_sum}') #1562
-    print(f'all_flash_step: {all_flash_step}') #268
+    print(f'part 1: {flash_sum}') #1562
+    print(f'part 2: {all_flash_step}') #268
 

@@ -90,6 +90,5 @@ if __name__ == '__main__':
         vents_map_2 = markDiagonals(vents_map_2, coordPair)
         coordNum += 1
 
-    print(vents_map_2.transpose())
     print(f'part 1: {len(vents_map_1[vents_map_1 > 1])}') #6687
     print(f'part 2: {len(vents_map_2[vents_map_2 > 1])}') #19851
