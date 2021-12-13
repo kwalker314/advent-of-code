@@ -1,13 +1,12 @@
 import os
 import numpy as np
 
-DTYPE = [('lower_limit', np.int16), ('upper_limit', np.int16), ('letter', np.unicode_, 1), ('pw', np.dtype('U100'))]
-
 if __name__ == '__main__':
     input_filename = "inputs\input" + os.path.basename(__file__)[-5:-3] + ".txt"
+    dt = [('lower_limit', np.int16), ('upper_limit', np.int16), ('letter', np.unicode_, 1), ('pw', np.dtype('U100'))]
     with open(input_filename) as f:
         cleanedlines = (line.replace('-', ' ').replace(':', '') for line in f)
-        passwords = np.genfromtxt(cleanedlines, dtype=DTYPE, autostrip=True, delimiter=' ')
+        passwords = np.genfromtxt(cleanedlines, dtype=dt, autostrip=True, delimiter=' ')
     count_1 = 0
     count_2 = 0
     for password in passwords:
