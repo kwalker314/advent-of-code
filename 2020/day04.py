@@ -75,14 +75,12 @@ if __name__ == '__main__':
             if isValid(prev_line):
                 count_1 += 1
                 if isStrictValid(prev_line):
-                    print(sorted(prev_line.split(' ')))
                     count_2 += 1
             prev_line = line.replace('\n', '')
     #finish the last line that we have!
     if isValid(prev_line):
         count_1 += 1
         if isStrictValid(prev_line):
-            print(sorted(prev_line.split(' ')))
             count_2 += 1
     print(f'part 1: {count_1}') #192
     print(f'part 2: {count_2}') #101
