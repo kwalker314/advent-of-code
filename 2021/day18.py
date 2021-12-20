@@ -61,12 +61,14 @@ class Tests(unittest.TestCase):
         self.assertEqual(reduce('[[[[7,0],[7,8]],[[7,9],[0,6]]],[[[7,8],[0,6]],[[6,6],[[7,8],0]]]]'),
                          '[[[[7,0],[7,8]],[[7,9],[0,6]]],[[[7,8],[6,0]],[[6,6],[7,8]]]]')
 
-    def test_puzzle(self):
+    def test_testinput(self):
         self.assertEqual(part1("inputs/test.txt"),
-                         '[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]')
+                         '[[[[6,6],[7,6]],[[7,7],[7,0]]],[[[7,7],[7,7]],[[7,8],[9,9]]]]')
+        self.assertEqual(part2("inputs/test.txt"), 3993)
 
-    def test_run_part1(self):
+    def test_solve(self):
         self.assertEqual(getMagnitude(part1(F)), 3305)
+        self.assertEqual(part2(F), 4563)
 
 
 def getMagnitude(nums_str: str) -> int:
@@ -164,13 +166,25 @@ def part1(filename: str):
         concat = f'[{prev_line},{line}]'
         prev_line = reduce(concat)
         print(prev_line)
-        print('==============================')
 
     file.close()
     print(f'magnitude: {getMagnitude(prev_line)}')
     return prev_line
 
 
-if __name__ == '__main__':
-    print(f'part 1: {getMagnitude(part1(F))}')  # 3770 - too high; 4103 - too high
-    print(f'part 2: {0}')  #
+def part2(filename: str):
+    file = open(filename)
+    nums = []
+    for line in file.readlines():
+        nums.append(line.strip().replace(' ', ''))
+    file.close()
+
+    highest_magnitude = 0
+    for i in range(len(nums)-1):
+        for j in range(i+1, len(nums)):
+            concat1 = f'[{nums[i]},{nums[j]}]'
+            concat2 = f'[{nums[j]},{nums[i]}]'
+            highest_magnitude = max(highest_magnitude, getMagnitude(reduce(concat1)), getMagnitude(reduce(concat2)))
+
+    print(f'highest magnitude: {highest_magnitude}')
+    return highest_magnitude
