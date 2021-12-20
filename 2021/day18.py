@@ -3,21 +3,8 @@ import re as re
 import ast
 
 F = "inputs/input18.txt"
-LOGGING = False
-
-
-def toggleLogging():
-    global LOGGING
-    LOGGING = not LOGGING
-    return LOGGING
-
 
 class Tests(unittest.TestCase):
-    def setUp(self) -> None:
-        toggleLogging()
-
-    def tearDown(self) -> None:
-        toggleLogging()
 
     def test_getMagnitude(self):
         self.assertEqual(getMagnitude('[[1,2],[[3,4],5]]'), 143)
@@ -55,35 +42,31 @@ class Tests(unittest.TestCase):
                          '[[[[7,7],[7,8]],[[9,5],[8,0]]],[[[9,[5,5]],20],[8,[9,0]]]]')
 
     def test_reduce(self):
-        self.setUp()
-        # self.assertEqual(reduce('[[[[1,1],[2,2]],[3,3]],[4,4]]'),
-        #                  '[[[[1,1],[2,2]],[3,3]],[4,4]]')
-        # self.assertEqual(reduce('[[[[[1,1],[2,2]],[3,3]],[4,4]],[5,5]]'),
-        #                  '[[[[3,0],[5,3]],[4,4]],[5,5]]')
-        # self.assertEqual(reduce('[[[[[[1,1],[2,2]],[3,3]],[4,4]],[5,5]],[6,6]]'),
-        #                  '[[[[5,0],[7,4]],[5,5]],[6,6]]')
-        # self.assertEqual(reduce('[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]'),
-        #                  '[[[[0,7],4],[[7,8],[6,0]]],[8,1]]')
-        # self.assertEqual(reduce('[[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]],[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]]'),
-        #                  '[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]')
+        self.assertEqual(reduce('[[[[1,1],[2,2]],[3,3]],[4,4]]'),
+                         '[[[[1,1],[2,2]],[3,3]],[4,4]]')
+        self.assertEqual(reduce('[[[[[1,1],[2,2]],[3,3]],[4,4]],[5,5]]'),
+                         '[[[[3,0],[5,3]],[4,4]],[5,5]]')
+        self.assertEqual(reduce('[[[[[[1,1],[2,2]],[3,3]],[4,4]],[5,5]],[6,6]]'),
+                         '[[[[5,0],[7,4]],[5,5]],[6,6]]')
+        self.assertEqual(reduce('[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]'),
+                         '[[[[0,7],4],[[7,8],[6,0]]],[8,1]]')
+        self.assertEqual(reduce('[[[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]],[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]]'),
+                         '[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]')
         self.assertEqual(reduce('[[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]],[[2,[[0,8],[3,4]]],[[[6,7],1],[7,[1,6]]]]]'),
                          '[[[[6,7],[6,7]],[[7,7],[0,7]]],[[[8,7],[7,7]],[[8,8],[8,0]]]]')
-        # self.assertEqual(reduce('[[[[6,7],[0,[6,7]]],[[0,7],[7,21]]],[[2,[11,10]],[[0,8],[8,0]]]]'),
-        #                  '[[[[6,7],[6,7]],[[7,7],[0,7]]],[[[8,7],[7,7]],[[8,8],[8,0]]]]')
-        # self.assertEqual(reduce('[[[[4,0],[5,4]],[[7,0],[15,5]]],[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]]'),
-        #                  '[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]')
-        self.tearDown()
-
-    def test_reduce1(self):
+        self.assertEqual(reduce('[[[[6,7],[0,[6,7]]],[[0,7],[7,21]]],[[2,[11,10]],[[0,8],[8,0]]]]'),
+                         '[[[[6,7],[6,7]],[[7,7],[0,7]]],[[[8,7],[7,7]],[[8,8],[8,0]]]]')
+        self.assertEqual(reduce('[[[[4,0],[5,4]],[[7,0],[15,5]]],[7,[[[3,7],[4,3]],[[6,3],[8,8]]]]]'),
+                         '[[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]')
         self.assertEqual(reduce('[[[[7,0],[7,8]],[[7,9],[0,6]]],[[[7,8],[0,6]],[[6,6],[[7,8],0]]]]'),
                          '[[[[7,0],[7,8]],[[7,9],[0,6]]],[[[7,8],[6,0]],[[6,6],[7,8]]]]')
 
     def test_puzzle(self):
         self.assertEqual(part1("inputs/test.txt"),
-                         '[[[[7,0],[7,8]],[[7,9],[0,6]]],[[[7,8],[6,0]],[[6,6],[7,8]]]]')
+                         '[[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]')
 
     def test_run_part1(self):
-        self.assertLess(getMagnitude(part1(F)), 3737)
+        self.assertEqual(getMagnitude(part1(F)), 3305)
 
 
 def getMagnitude(nums_str: str) -> int:
@@ -126,7 +109,7 @@ def tryExplode(nums_str: str) -> str:
         literal = f'\[{left},{right}\]'
         if nums_str.count('[', 0, find) - nums_str.count(']', 0, find) >= 4:
             #find the digits to each side of the pair and store the character between the digit and pair
-            prev_modify = re.compile(r'([\d]+)([^\d]+)' + literal).search(nums_str, last_find)
+            prev_modify = re.compile(r'([\d]+)([^\d]+)' + literal).search(nums_str, last_find, find+len(search_pair))
             post_modify = re.compile(literal + r'([^\d]+)([\d]+)').search(nums_str, find)
 
             # if an addition happens to the left, the string to the left of the exploding pair is constructed as:
@@ -160,20 +143,12 @@ def tryExplode(nums_str: str) -> str:
 
 def reduce(line) -> str:
     line = line.strip().replace(' ', '')
-    if LOGGING:
-        print(f'start: {line}')
     while True:
         reduced_line = tryExplode(line)
         if reduced_line == line:
             reduced_line = trySplit(line)
             if reduced_line == line:
                 break
-            elif LOGGING:
-                print(f'split: {reduced_line}')
-        elif LOGGING:
-            print(f'explode: {reduced_line}')
-        if reduced_line == '[[[[[6,7],6],0,7],[6,7]],[[5,10],[26,0]]],[[2,[11,10]],[[0,8],[8,0]]]]':
-            print("here")
         line = reduced_line
     return line
 
@@ -192,6 +167,7 @@ def part1(filename: str):
         print('==============================')
 
     file.close()
+    print(f'magnitude: {getMagnitude(prev_line)}')
     return prev_line
 
 
