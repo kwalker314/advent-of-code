@@ -2,7 +2,8 @@ DIE = 1
 WINS = (0, 0)
 POSS_POSITIONS = 10
 POSS_NON_WIN_SCORES = 21
-# all possible combinations of 3 die rolls where the die can roll a 1, 2, or 3 each time
+# for each x, y in POSS_ROLLS, x is the sum of the 3 rolls,
+# and y is the frequency of that sum out of every combination of rolls
 POSS_ROLLS = [(3, 1), (4, 3), (5, 6), (6, 7), (7, 6), (8, 3), (9, 1)]
 
 
@@ -49,22 +50,15 @@ def update_wins(num_wins: int, p1_turn: bool):
 
 
 def initialize_scores_array() -> [int]:
-    return POSS_NON_WIN_SCORES * [POSS_POSITIONS * [POSS_NON_WIN_SCORES * [POSS_POSITIONS * [0]]]]
+    return [[[[0 for _ in range(POSS_POSITIONS)] for _ in range(POSS_NON_WIN_SCORES)] for _ in range(POSS_POSITIONS)] for _ in range(POSS_NON_WIN_SCORES)]
 
 
-def progress_scores(p1_turn: bool, scores: [int], skip_score_zero: bool) -> (bool, [int]):
+def progress_scores(p1_turn: bool, scores: [int]) -> (bool, [int]):
     continue_play = False
 
     # for the sake of readability in this function,
     # p1 is always the current player, and p2 is always the other player
     scores_copy = initialize_scores_array()
-    new_wins = 0
-    for p1_pos in scores[20]:
-        for p2_score in p1_pos:
-            new_wins += sum(p2_score)
-    # multiply by 3 because this score would have won in all
-    # 3 universes created by rolling the dice
-    update_wins(new_wins*3, p1_turn)
 
     for p1_score in range(POSS_NON_WIN_SCORES-1):
         for p1_pos in range(POSS_POSITIONS):
@@ -75,6 +69,10 @@ def progress_scores(p1_turn: bool, scores: [int], skip_score_zero: bool) -> (boo
                     num = scores[p1_score][p1_pos][p2_score][p2_pos]
                     if num == 0:
                         continue
+                    elif p1_score == 20:
+                        # multiply by 3 because this score would have won in all
+                        # 3 universes created by rolling the dice
+                        update_wins(num*3, p1_turn)
                     else:
                         for roll, multiply in POSS_ROLLS:
                             new_pos = 10 if (p1_pos_adj + roll) % 10 == 0 else (p1_pos_adj + roll) % 10
@@ -105,7 +103,7 @@ def part2(p1: int, p2: int):
     #
     # functionally, evey time a turn happens, we do the following:
     # 1. make a copy of scores with all values set to 0 (score_copy)
-    # 2. for each score[a][b][c][d] in score[a], for each roll value in poss_roll_results,
+    # 2. for each score[a][b][c][d] in score[a], for each roll, multiply tuple in POSS_ROLLS,
     #    calculate the new position on the board (new_pos) and the resulting new score (new_score)
     #    a. if new_score >= 21, add value in score[a][b][c][d] to current player's win count and continue
     #       i. this effectively removes the set of universes from play, as the other player should not
