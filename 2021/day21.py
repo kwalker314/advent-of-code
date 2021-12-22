@@ -2,6 +2,7 @@ DIE = 1
 WINS = (0, 0)
 POSS_POSITIONS = 10
 POSS_NON_WIN_SCORES = 21
+WINNING_POINTS = 21
 # for each x, y in POSS_ROLLS, x is the sum of the 3 rolls,
 # and y is the frequency of that sum out of every combination of rolls
 POSS_ROLLS = [(3, 1), (4, 3), (5, 6), (6, 7), (7, 6), (8, 3), (9, 1)]
@@ -49,40 +50,47 @@ def update_wins(num_wins: int, p1_turn: bool):
     return WINS
 
 
+# return a 21 x 10 x 21 x 10 array with zeros in all positions
 def initialize_scores_array() -> [int]:
-    return [[[[0 for _ in range(POSS_POSITIONS)] for _ in range(POSS_NON_WIN_SCORES)] for _ in range(POSS_POSITIONS)] for _ in range(POSS_NON_WIN_SCORES)]
+    return [[[[0 for _ in range(POSS_POSITIONS)] for _ in range(POSS_NON_WIN_SCORES)]
+             for _ in range(POSS_POSITIONS)] for _ in range(POSS_NON_WIN_SCORES)]
 
 
-def progress_scores(p1_turn: bool, scores: [int]) -> (bool, [int]):
+def get_new_pos(pos: int, roll: int) -> int:
+    new_pos = pos + roll
+    if new_pos <= 10:
+        return new_pos
+    else:
+        return new_pos - 10
+
+
+def process_scores(p1_turn: bool, scores: [int]) -> (bool, [int]):
     continue_play = False
 
     # for the sake of readability in this function,
     # p1 is always the current player, and p2 is always the other player
     scores_copy = initialize_scores_array()
 
-    for p1_score in range(POSS_NON_WIN_SCORES-1):
+    for p1_score in range(POSS_NON_WIN_SCORES):
         for p1_pos in range(POSS_POSITIONS):
-            # adjust the position of player 1 to account for a board that goes from 1-10, rather than 0-9
+            # adjust the position of player 1 (the one we'll actually be modifying)
+            # to account for positions that go from 1-10, rather than 0-9
             p1_pos_adj = p1_pos + 1
             for p2_score in range(POSS_NON_WIN_SCORES):
                 for p2_pos in range(POSS_POSITIONS):
                     num = scores[p1_score][p1_pos][p2_score][p2_pos]
                     if num == 0:
                         continue
-                    elif p1_score == 20:
-                        # multiply by 3 because this score would have won in all
-                        # 3 universes created by rolling the dice
-                        update_wins(num*3, p1_turn)
                     else:
                         for roll, multiply in POSS_ROLLS:
-                            new_pos = 10 if (p1_pos_adj + roll) % 10 == 0 else (p1_pos_adj + roll) % 10
+                            new_pos = get_new_pos(p1_pos_adj, roll)
                             new_score = p1_score + new_pos
-                            if new_score >= 21:
+                            if new_score >= WINNING_POINTS:
                                 update_wins(num*multiply, p1_turn)
                             else:
                                 continue_play = True
                                 # don't forget to adjust the position back down again
-                                scores_copy[p2_score][p2_pos][new_score][new_pos - 1] += num*multiply
+                                scores_copy[p2_score][p2_pos][new_score][new_pos-1] += num*multiply
 
     return continue_play, scores_copy
 
@@ -114,19 +122,17 @@ def part2(p1: int, p2: int):
     # 3. if continue_play is True, set p1_turn = not p1_turn and scores = scores_copy,
     #    then go back to step 1 to repeat the process
     scores = initialize_scores_array()  # a 21 x 10 x 21 x 10 array
-    scores[0][p1][0][p2] = 1  # initialize using the starting values
+    scores[0][p1-1][0][p2-1] = 1  # add in the starting values
     while continue_play:
-        continue_play, scores = progress_scores(p1_turn, scores)
+        continue_play, scores = process_scores(p1_turn, scores)
         p1_turn = not p1_turn
-        print(f'P1 WINS: {WINS[0]} // P2 WINS: {WINS[1]}')
+
+    print(f'P1 WINS: {WINS[0]} // P2 WINS: {WINS[1]}')
 
     return max(WINS[0], WINS[1])
 
 
 if __name__ == '__main__':
-    #p1, p2 = 1, 6
-    p1, p2 = 4, 8 #test input
-    print(f'part 1: {part1(p1, p2)}')
-    print(f'part 2: {part2(p1, p2)}') #225525006757890 - too high;
-    # 2297753325
-    # 2425313016 - too low
+    p1, p2 = 1, 6
+    print(f'part 1: {part1(p1, p2)}')  # 604998
+    print(f'part 2: {part2(p1, p2)}')  # 157253621231420
