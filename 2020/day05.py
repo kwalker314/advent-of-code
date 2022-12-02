@@ -3,7 +3,7 @@ import os
 ROW_LENGTH = 7
 
 if __name__ == '__main__':
-    input_filename = "inputs\input" + os.path.basename(__file__)[-5:-3] + ".txt"
+    input_filename = "inputs\input05.txt"
     #input_filename = "inputs/test.txt"
 
     part_1 = 0

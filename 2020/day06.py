@@ -1,7 +1,7 @@
 import os
 
 if __name__ == '__main__':
-    input_filename = "inputs\input" + os.path.basename(__file__)[-5:-3] + ".txt"
+    input_filename = "inputs\input06.txt"
     #input_filename = "inputs/test.txt"
 
     part_1 = 0

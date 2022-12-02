@@ -46,7 +46,7 @@ if __name__ == '__main__':
     input = "inputs/input09.txt"
     heatmap = np.genfromtxt(input, delimiter=1, dtype=int)
     basins = heatmap.copy()
-    sum = 0
+    heat_sum = 0
     i = 0
     basin_size_1 = 1
     basin_size_2 = 1
@@ -55,7 +55,7 @@ if __name__ == '__main__':
         j = 0
         for j in range(len(heatmap[0])):
             lowPoint = isLowPoint(heatmap, i, j)
-            sum += lowPoint
+            heat_sum += lowPoint
 
             if lowPoint > 0:
                 (basin_size, basins) = findBasin(basins, i, j)
@@ -66,5 +66,5 @@ if __name__ == '__main__':
                 elif basin_size > basin_size_3:
                     basin_size_3 = basin_size
 
-    print(f'part 1: {sum}') #496
+    print(f'part 1: {heat_sum}') #496
     print(f'part 2: {basin_size_1*basin_size_2*basin_size_3}') #902880

@@ -2,7 +2,7 @@ import os
 import numpy as np
 
 if __name__ == '__main__':
-    input_filename = "inputs\input" + os.path.basename(__file__)[-5:-3] + ".txt"
+    input_filename = "inputs\input02.txt"
     dt = [('lower_limit', np.int16), ('upper_limit', np.int16), ('letter', np.unicode_, 1), ('pw', np.dtype('U100'))]
     with open(input_filename) as f:
         cleanedlines = (line.replace('-', ' ').replace(':', '') for line in f)

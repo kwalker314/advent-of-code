@@ -1,7 +1,7 @@
 import os
 
 if __name__ == '__main__':
-    input_filename = "inputs\input" + os.path.basename(__file__)[-5:-3] + ".txt"
+    input_filename = "inputs\input03.txt"
     slope_1 = 0
     slope_2 = 0
     slope_3 = 0

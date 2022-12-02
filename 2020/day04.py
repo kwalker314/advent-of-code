@@ -61,7 +61,7 @@ def isStrictValid(passport: str) -> bool:
     return True
 
 if __name__ == '__main__':
-    input_filename = "inputs\input" + os.path.basename(__file__)[-5:-3] + ".txt"
+    input_filename = "inputs\input04.txt"
     #input_filename = "inputs/test.txt"
     prev_line = ''
     count_1 = 0

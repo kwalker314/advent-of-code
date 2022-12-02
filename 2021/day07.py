@@ -8,10 +8,10 @@ if __name__ == '__main__':
     if i < 1:
         i = 1
 
-    max = np.max(crabs)
-    min_1 = max * len(crabs) #reasonable maxess that are hopefully bigger than the actual answer!
+    max_crabs = np.max(crabs)
+    min_1 = max_crabs * len(crabs) #reasonable maxess that are hopefully bigger than the actual answer!
     min_2 = min_1*min_1 #... this needed to be bigger than i initially estimated lol
-    while i < max:
+    while i < max_crabs:
         abs_change = abs(crabs - i) #get the absolute change to get to i for each crab
         poss_min = np.sum(abs_change)
         if poss_min < min_1:

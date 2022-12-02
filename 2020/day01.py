@@ -2,7 +2,7 @@ import os
 import numpy as np
 
 if __name__ == '__main__':
-    input_filename = "inputs\input" + os.path.basename(__file__)[-5:-3] + ".txt"
+    input_filename = "inputs\input01.txt"
     nums = np.genfromtxt(input_filename, dtype=np.int64, delimiter=4, autostrip=True)
     winning_combo_1 = 0
     winning_combo_2 = 0
