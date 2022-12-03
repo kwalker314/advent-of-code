@@ -54,12 +54,14 @@ def calculateScore2(opponent, you):
     return calculateScore1(opponent, outcome[you][opponent])
 
 input = open(os.path.join(os.getcwd(), "inputs/input02.txt"))
-final_score1 = 0
-final_score2 = 0
+finalScore1 = 0
+finalScore2 = 0
 for line in input:
     opponent, you = line.strip().split(' ')
-    final_score1 += calculateScore1(opponent, you)
-    final_score2 += calculateScore2(opponent, you)
+    finalScore1 += calculateScore1(opponent, you)
+    finalScore2 += calculateScore2(opponent, you)
 input.close()
-print("part 1: ", final_score1)
-print("part 2: ", final_score2)
+assert finalScore1 == 11063, f'Part 1: expected 11063 but got {finalScore1}'
+assert finalScore2 == 10349, f'Part 2: expected 10349 but got {finalScore2}'
+print("part 1: ", finalScore1)
+print("part 2: ", finalScore2)
