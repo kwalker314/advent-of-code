@@ -5,17 +5,18 @@ def parseRanges(ranges: str) -> (str, str):
     ranges = ranges.split(',')
     return (ranges[0], ranges[1])
 
+def parseRange(range: str) -> (int, int):
+    splitRange = range.split('-')
+    return int(splitRange[0]), int(splitRange[1])
+
 def checkContainsAndOverlap(range1: str, range2: str) -> (bool, bool):
-    range1Start, range1End = range1.split('-')
-    range2Start, range2End = range2.split('-')
-    range1Start, range1End = int(range1Start), int(range1End)
-    range2Start, range2End = int(range2Start), int(range2End)
+    range1Start, range1End = parseRange(range1)
+    range2Start, range2End = parseRange(range2)
     rangeContained = (range1Start <= range2Start and range1End >= range2End) \
         or (range2Start <= range1Start and range2End >= range1End)
     #ty stackoverflow for this ez range overlap check!
     rangeOverlap = max(range1Start, range2Start) <= min(range1End, range2End)
     return (rangeContained, rangeOverlap)
-
 
 def checkRanges(line: str) -> (bool, bool):
     range1, range2 = parseRanges(line)
