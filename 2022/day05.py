@@ -69,7 +69,7 @@ def processCommands(stacks: [str], commands: [[int]]) -> [str]:
         stacks[srcStack][0] = stacks[srcStack][0][:-numCrates]
         stacks[srcStack][1] = stacks[srcStack][1][:-numCrates]
 
-        #append the required cratest to the destination stack
+        #append the required crates to the destination stack
         stacks[destStack][0] = stacks[destStack][0] + cratesStr1
         stacks[destStack][1] = stacks[destStack][1] + cratesStr2
     return stacks
