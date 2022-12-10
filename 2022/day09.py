@@ -2,7 +2,7 @@ import os
 
 commands = []
 
-# heads is coords[0], tails are coords[1-9]
+# head is coords[0], tails are coords[1-9]
 coords = [[0, 0] for x in range(10)]
 visited = [set(tuple()), set(tuple())]
 
@@ -16,19 +16,27 @@ def getCommands():
     return
 
 def processU(distance: int):
-    coords[0][1] -= distance
+    for i in range(distance):
+        coords[0][1] -= 1
+        processTails()
     return
 
 def processD(distance: int):
-    coords[0][1] += distance
+    for i in range(distance):
+        coords[0][1] += 1
+        processTails()
     return
 
 def processL(distance: int):
-    coords[0][0] -= distance
+    for i in range(distance):
+        coords[0][0] -= 1
+        processTails()
     return
 
 def processR(distance: int):
-    coords[0][0] += distance
+    for i in range(distance):
+        coords[0][0] += 1
+        processTails()
     return
 
 def tailInRange(tailIndex: int = 1) -> bool:
@@ -77,6 +85,12 @@ def moveTail(tailIndex: int = 1):
         moveTowardsHead(tailIndex)
     return
 
+def processTails():
+    for tailIndex in range(1, len(coords)):
+        while not tailInRange(tailIndex):
+            moveTail(tailIndex)
+    return
+
 def processCommand(command: str):
     if command[0] == 'U':
         processU(command[1])
@@ -86,11 +100,6 @@ def processCommand(command: str):
         processR(command[1])
     elif command[0] == 'L':
         processL(command[1])
-    
-    for tailIndex in range(1, len(coords)):
-        while not tailInRange(tailIndex):
-            moveTail(tailIndex)
-            movedTail = True
     return
 
 getCommands()
@@ -100,8 +109,7 @@ for command in commands:
 
 part1, part2 = len(visited[0]), len(visited[1])
 
-# assert part1 == 6181, f'Part 1: expected 6181 but got {part1}'
-# assert part2 == '', f'Part 2: expected sdkfjlsdkjf but got {part2}'
-# 2376, 2377 too low
+assert part1 == 6181, f'Part 1: expected 6181 but got {part1}'
+assert part2 == 2386, f'Part 2: expected 2386 but got {part2}'
 print("part 1: ", part1)
 print("part 2: ", part2)
