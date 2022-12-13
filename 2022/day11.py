@@ -38,7 +38,7 @@ class Monkey:
     testFalse = None
     inspectionCount = 0
 
-    def inspectItem(self, item: int) -> int:
+    def inspectItem(self, item: int, reduceWorry: bool=True) -> int:
         """
         does nothing if the monkey has no items
         does the monkey's operation on the first item in its list,
@@ -51,7 +51,7 @@ class Monkey:
         item = self.operation.operator(
             item if self.operation.arg1 == 'worry' else self.operation.arg1,
             item if self.operation.arg2 == 'worry' else self.operation.arg2)
-        return item//3
+        return item//3 if reduceWorry else item
     
     def clearItems(self):
         self.items = []
@@ -95,16 +95,26 @@ for monkey in input.read().split('\n\n'):
     monkeys.append(currMonkey)
 input.close()
 
+pt1Monkeys = monkeys.copy()
 for i in range(20):
-    for monkey in monkeys:
+    for monkey in pt1Monkeys:
         for item in monkey.items:
             itemVal = monkey.inspectItem(item)
             recipient = monkey.getRecipient(itemVal)
-            monkeys[recipient].receiveItem(itemVal)
+            pt1Monkeys[recipient].receiveItem(itemVal)
         monkey.clearItems()
 
-part1, part2 = calcMonkeyBusiness(monkeys), 0
+for i in range(10000):
+    if i%100:
+        print(f'{i} of 9999')
+    for monkey in monkeys:
+        for item in monkey.items:
+            itemVal = monkey.inspectItem(item, reduceWorry=False)
+            recipient = monkey.getRecipient(itemVal)
+            monkeys[recipient].receiveItem(itemVal)
+        monkey.clearItems()
+part1, part2 = calcMonkeyBusiness(pt1Monkeys), calcMonkeyBusiness(monkeys)
 assert part1 == 120756, f'Part 1: expected 120756 but got {part1}'
-assert part2 == 0, f'Part 2: expected 0 \n but got \n {part2}'
+# assert part2 == 0, f'Part 2: expected 0 \n but got \n {part2}'
 print("part 1: ", part1)
 print("part 2: ", part2)
