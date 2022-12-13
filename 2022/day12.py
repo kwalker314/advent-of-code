@@ -45,13 +45,12 @@ def getNeighbors(current: Coordinate) -> [Coordinate]:
         neighbors.append(Coordinate(current.row-1, current.col))
     return neighbors
 
-def part1(hillsMap: [int]) -> int:
-    global S
+def findMinPath(hillsMap: [int], startingPoint: Coordinate) -> int:
     # starting coord has a value of 0
-    coordcosts = {S: 0}
+    coordcosts = {startingPoint: 0}
     pq = []
     visited = set()
-    heap.heappush(pq, (0, S))
+    heap.heappush(pq, (0, startingPoint))
 
     # hello dijkstra, it's been awhile
     while len(pq) > 0:
@@ -80,9 +79,15 @@ for line in input.readlines():
 input.close()
 getGridData(hills)
 
-part1, part2 = part1(hills.copy()), 0
-# 445, 447 too high
-# assert part1 == 120756, f'Part 1: expected 120756 but got {part1}'
-# assert part2 == 0, f'Part 2: expected 0 \n but got \n {part2}'
+part1 = findMinPath(hills, S)
+part2 = 447
+for i in range(len(hills)):
+    for j in range(len(hills[0])):
+        if hills[i][j] == 1:
+            result = findMinPath(hills, Coordinate(i, j))
+            if result > 0:
+                part2 = min(part2, result)
+assert part1 == 425, f'Part 1: expected 425 but got {part1}'
+assert part2 == 418, f'Part 2: expected 418 {part2}'
 print("part 1: ", part1)
 print("part 2: ", part2)

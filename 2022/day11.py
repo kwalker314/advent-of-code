@@ -115,6 +115,6 @@ for i in range(10000):
         monkey.clearItems()
 part1, part2 = calcMonkeyBusiness(pt1Monkeys), calcMonkeyBusiness(monkeys)
 assert part1 == 120756, f'Part 1: expected 120756 but got {part1}'
-# assert part2 == 0, f'Part 2: expected 0 \n but got \n {part2}'
+# assert part2 == 0, f'Part 2: expected 0 but got {part2}'
 print("part 1: ", part1)
 print("part 2: ", part2)
