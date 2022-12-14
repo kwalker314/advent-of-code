@@ -1,11 +1,22 @@
 import os
 import ast
+import functools
 
 def compareGroup(sideA, sideB) -> int:
     """
-    returns -1 if the sides are in the correct order, 0
-    if it's too early to tell, and 1 if the sides are in the incorrect order
-    if sideA and sideB are both ints, return sideA - sideB
+    returns -1 if the sides are in the correct order, 0 if it's
+    too early to tell, and 1 if the sides are in the incorrect order
+    
+    if sideA and sideB are both ints, return according to the
+    above return values for ascending order
+
+    if one of sideA and sideB is a list but the other is an int,
+    convert the non-list one to an int and re-compare
+
+    if both sideA and sideB are lists, compare their elements
+    one by one recursively - in the event of each element
+    being equal, returns -1 if sideA has fewer items, 1 if
+    sideB has fewer items, and 0 if they're the same length
     """
     if isinstance(sideA, int) and isinstance(sideB, int):
         return (sideA - sideB)/abs(sideA - sideB) if sideB != sideA else 0
@@ -29,23 +40,31 @@ def compareGroup(sideA, sideB) -> int:
 
 input = open(os.path.join(os.getcwd(), "inputs/input13.txt"))
 groups = []
-for group in input.read().split('\n\n'):
-    # truly a disgusting number of parentheses on the following line
-    groups.append(list(map(ast.literal_eval, group.strip().split('\n'))))
+for line in input.readlines():
+    lineStripped = line.strip()
+    if len(lineStripped) > 0:
+        groups.append(ast.literal_eval(lineStripped))
 input.close()
 
-part1, part2 = 0, 0
-index = 1
-for group in groups:
-    print(f'index: {index}')
-    if compareGroup(group[0], group[1]) < 1:
-        # print(f'{group[0]} is before {group[1]}')
-        part1 += index
-    # else:
-        # print(f'{group[0]} is NOT before {group[1]}')
-    index += 1
+# initialize part2 to 1 bc we're gonna have to multiply for part 2
+part1, part2 = 0, 1
+for i in range(0, len(groups), 2):
+    if compareGroup(groups[i], groups[i+1]) < 1:
+        part1 += int(i/2)+1
+
+# add the necessary list items, then sort
+# using our ~handy dandy~ comparison function written for part 1
+groups += [[[2]], [[6]]]
+groups.sort(key=functools.cmp_to_key(compareGroup))
+
+# find where the list items we added ended up and
+# multiply the indices of each (where indexes start at ONE,
+# for some reason) together for part 2's answer!
+for i in range(len(groups)):
+    if groups[i] in [[[2]], [[6]]]:
+        part2 *= i+1
 
 assert part1 == 5330, f'Part 1: expected 5330 but got {part1}'
-# assert part2 == 418, f'Part 2: expected 418 {part2}'
+assert part2 == 27648, f'Part 2: expected 27648 {part2}'
 print("part 1: ", part1)
 print("part 2: ", part2)
