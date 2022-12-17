@@ -85,7 +85,7 @@ input.close()
 part1, part2 = 0, 0
 while dropSand(SAND_SOURCE):
     part1 += 1
-# assert part1 == 715, f'Part 1: expected 715 but got {part1}'
+assert part1 == 715, f'Part 1: expected 715 but got {part1}'
 print("part 1: ", part1)
 
 part2 = part1 #continue dropping sand where we left off
@@ -94,5 +94,5 @@ while dropSand(SAND_SOURCE, maxFloor):
     part2 += 1
 # off by 1 since the while loop terminates before the final sand unit is counted
 part2 += 1
-assert part2 == 25248, f'Part 2: expected 25248 {part2}'
+assert part2 == 25248, f'Part 2: expected 25248 but got {part2}'
 print("part 2: ", part2)
