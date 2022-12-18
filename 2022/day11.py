@@ -1,5 +1,7 @@
 import os
 from collections import namedtuple
+from functools import reduce
+import copy
 
 Operation = namedtuple('Operation', ['arg1', 'arg2', 'operator'])
 
@@ -31,14 +33,16 @@ def getOpObj(operation: str) -> Operation:
         arg2=getOpArg(opSplit[2]))
 
 class Monkey:
+    originalItems = []
     items = []
     operation = namedtuple
+    index = None
     divisor = None
     testTrue = None
     testFalse = None
     inspectionCount = 0
 
-    def inspectItem(self, item: int, reduceWorry: bool=True) -> int:
+    def inspectItem(self, item: int) -> int:
         """
         does nothing if the monkey has no items
         does the monkey's operation on the first item in its list,
@@ -51,7 +55,7 @@ class Monkey:
         item = self.operation.operator(
             item if self.operation.arg1 == 'worry' else self.operation.arg1,
             item if self.operation.arg2 == 'worry' else self.operation.arg2)
-        return item//3 if reduceWorry else item
+        return item
     
     def clearItems(self):
         self.items = []
@@ -65,20 +69,24 @@ class Monkey:
 
     def receiveItem(self, item: int):
         """add the item to the monkey's list of items"""
-        self.items.append(item)        
+        self.items.append(item)  
+
+    def resetItems(self):
+        self.items = self.originalItems      
     
     def __repr__(self):
-        return "Monkey()"
+        return str(self)
     
     def __str__(self):
-        return f'Items: {", ".join(list(map(str, self.items)))}\n' + \
-            f'Operation: {self.operation}\n' + \
+        return f'Monkey {self.index}:\n' + \
+            f'Inspection count: {self.inspectionCount}\n' + \
+            f'Items: {", ".join(list(map(str, self.items)))}\n' + \
             f'Test: divisible by {self.divisor}\n' + \
-            f'Throw to {self.testTrue} if test returns true, else throw to {self.testFalse}'
+            f'Throw to {self.testTrue} if test returns true, else throw to {self.testFalse}\n'
 
 def calcMonkeyBusiness(monkeys: [Monkey]) -> int:
-    monkeys.sort(reverse=True, key=lambda monkey: monkey.inspectionCount)
-    return monkeys[0].inspectionCount * monkeys[1].inspectionCount
+    sortedMonkeys = sorted(monkeys, key=lambda monkey: monkey.inspectionCount)
+    return sortedMonkeys[-1].inspectionCount * sortedMonkeys[-2].inspectionCount
 
 monkeys = []
 input = open(os.path.join(os.getcwd(), "inputs/input11.txt"))
@@ -87,7 +95,9 @@ for monkey in input.read().split('\n\n'):
     currMonkey = Monkey()
     # ok this looks DISGUSTING
     # but it works and i don't want to write 5098240 functions
+    currMonkey.index = int(monkeyLines[0].strip().split(' ')[-1].split(':')[0])
     currMonkey.items = list(map(int, monkeyLines[1].strip().split(': ')[1].split(',')))
+    currMonkey.originalItems = copy.deepcopy(currMonkey.items)
     currMonkey.operation = getOpObj(monkeyLines[2].strip().split(' = ')[1])
     currMonkey.divisor = int(monkeyLines[3].strip().split(' ')[-1])
     currMonkey.testTrue = int(monkeyLines[4].strip().split(' ')[-1])
@@ -95,26 +105,32 @@ for monkey in input.read().split('\n\n'):
     monkeys.append(currMonkey)
 input.close()
 
-pt1Monkeys = monkeys.copy()
 for i in range(20):
-    for monkey in pt1Monkeys:
-        for item in monkey.items:
-            itemVal = monkey.inspectItem(item)
-            recipient = monkey.getRecipient(itemVal)
-            pt1Monkeys[recipient].receiveItem(itemVal)
-        monkey.clearItems()
-
-for i in range(10000):
-    if i%100:
-        print(f'{i} of 9999')
     for monkey in monkeys:
         for item in monkey.items:
-            itemVal = monkey.inspectItem(item, reduceWorry=False)
+            itemVal = monkey.inspectItem(item)//3
             recipient = monkey.getRecipient(itemVal)
             monkeys[recipient].receiveItem(itemVal)
         monkey.clearItems()
-part1, part2 = calcMonkeyBusiness(pt1Monkeys), calcMonkeyBusiness(monkeys)
+
+part1 = calcMonkeyBusiness(monkeys)
 assert part1 == 120756, f'Part 1: expected 120756 but got {part1}'
-# assert part2 == 0, f'Part 2: expected 0 but got {part2}'
 print("part 1: ", part1)
+
+# reset counts for part 2
+for monkey in monkeys:
+    monkey.inspectionCount = 0
+    monkey.resetItems()
+
+divisorProduct = reduce((lambda m1, m2: m1*m2), [monkey.divisor for monkey in monkeys])
+
+for i in range(10000):
+    for monkey in monkeys:
+        for item in monkey.items:
+            itemVal = monkey.inspectItem(item) % divisorProduct
+            recipient = monkey.getRecipient(itemVal)
+            monkeys[recipient].receiveItem(itemVal)
+        monkey.clearItems()
+part2 = calcMonkeyBusiness(monkeys)
+assert part2 == 39109444654, f'Part 2: expected 39109444654 but got {part2}'
 print("part 2: ", part2)
