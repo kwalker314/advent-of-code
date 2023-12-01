@@ -1,7 +1,8 @@
 import os
-import sys
 import re
+
 textNumPattern = re.compile(r'(?=(one|two|three|four|five|six|seven|eight|nine|[0-9]))')
+
 def getNum(strNum):
     if strNum == 'one' or strNum == '1':
         return 1
@@ -24,16 +25,15 @@ def getNum(strNum):
 
 input = open(os.path.join(os.getcwd(), "inputs/input01.txt"))
 sums = (0,0)
-correctSums = (55621, 53592) #53587 incorrect, 53592?
+correctSums = (55621, 53592)
 for line in input:
     matches1 = re.findall(r'\d', line)
     matches2 = re.findall(textNumPattern, line)
-    print(matches2)
-    sum0 = (10*int(matches1[0]) if len(matches1) > 0 else 0) + (int(matches1[-1]) if len(matches1) > 0 else 0)
-    sum1 = (10*getNum(matches2[0]) if len(matches2) > 0 else 0) + (getNum(matches2[-1]) if len(matches2) > 0 else 0)
+    sum0 = 0 if len(matches1) == 0 else (10*int(matches1[0])) + int(matches1[-1])
+    sum1 = 0 if len(matches2) == 0 else (10*getNum(matches2[0]) + getNum(matches2[-1]))
     sums=(sums[0]+sum0, sums[1]+sum1)
 input.close()
-# assert sums[0] == correctSums[0], f'Part 1: expected {correctSums[0]} but got {sums[0]}'
-# assert sums[1] == correctSums[1], f'Part 2: expected {correctSums[1]} but got {sums[1]}'
+assert sums[0] == correctSums[0], f'Part 1: expected {correctSums[0]} but got {sums[0]}'
+assert sums[1] == correctSums[1], f'Part 2: expected {correctSums[1]} but got {sums[1]}'
 print("part 1: ", sums[0])
 print("part 2: ", sums[1])
