@@ -36,12 +36,12 @@ while not areAllGhostsGood(ghosts):
     for g, ghost in enumerate(ghosts):
         if type(ghost) != int:
             if ghost[-1] == 'Z':
-                if g == 0 and ghost == 'ZZZ': #part 1 "ghost"
-                    output1 = index
-                ghosts[g] = index
+                if (g == 0 and ghost == 'ZZZ') or g > 0:
+                    ghosts[g] = index
             else:
                 ghosts[g] = mappings[ghost][nextDir]
     index += 1
+output1 = ghosts[0]
 output2 = math.lcm(*ghosts) #damn this math minor is paying dividends (hah)
 assert output1 == correctOutput[0], f'Part 1: expected {correctOutput[0]} but got {output1}'
 assert output2 == correctOutput[1], f'Part 2: expected {correctOutput[1]} but got {output2}'
